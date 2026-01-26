@@ -1,0 +1,1348 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K-CARD STUDIO | Your Trusted K-Pop Photocard Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    * {
+      font-family: 'Outfit', 'Noto Sans KR', sans-serif;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #a855f7, #ec4899, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(168, 85, 247, 0.2);
+    }
+    
+    .btn-glow {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-glow::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-glow:hover::before {
+      left: 100%;
+    }
+    
+    .hero-gradient {
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 50%, #16213e 100%);
+    }
+    
+    .neon-border {
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3), inset 0 0 15px rgba(168, 85, 247, 0.1);
+    }
+    
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .slide-in {
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .pulse-badge {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #1a1a2e;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      border-radius: 4px;
+    }
+    
+    .toast {
+      animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.7s forwards;
+    }
+    
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-20px); }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full bg-[#0a0a0f] text-white overflow-x-hidden">
+  <div id="app" class="h-full w-full overflow-auto"><!-- Toast Container -->
+   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div><!-- Navigation -->
+   <nav class="fixed top-0 left-0 right-0 z-40 bg-[#0a0a0f]/90 backdrop-blur-lg border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('home')">
+       <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center"><span class="text-xl">💜</span>
+       </div><span class="text-xl font-bold">K-CARD <span class="gradient-text">STUDIO</span></span>
+      </div>
+      <div class="hidden md:flex items-center gap-8"><button onclick="navigateTo('home')" class="nav-link text-gray-300 hover:text-white transition-colors">Home</button> <button onclick="navigateTo('products')" class="nav-link text-gray-300 hover:text-white transition-colors">Shop</button> <button onclick="navigateTo('about')" class="nav-link text-gray-300 hover:text-white transition-colors">About</button> <button onclick="navigateTo('contact')" class="nav-link text-gray-300 hover:text-white transition-colors">Contact</button>
+      </div>
+      <div class="flex items-center gap-4"><button onclick="navigateTo('wishlist')" class="relative p-2 text-gray-300 hover:text-pink-400 transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+        </svg><span id="wishlist-count" class="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 rounded-full text-xs flex items-center justify-center hidden">0</span> </button> <button onclick="navigateTo('cart')" class="relative p-2 text-gray-300 hover:text-purple-400 transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg><span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-purple-500 rounded-full text-xs flex items-center justify-center hidden">0</span> </button> <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg></button>
+      </div>
+     </div>
+    </div><!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-[#0a0a0f] border-t border-white/10">
+     <div class="px-4 py-4 space-y-2"><button onclick="navigateTo('home'); toggleMobileMenu();" class="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Home</button> <button onclick="navigateTo('products'); toggleMobileMenu();" class="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Shop</button> <button onclick="navigateTo('about'); toggleMobileMenu();" class="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">About</button> <button onclick="navigateTo('contact'); toggleMobileMenu();" class="block w-full text-left px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Contact</button>
+     </div>
+    </div>
+   </nav><!-- Main Content -->
+   <main id="main-content" class="pt-16"><!-- HOME PAGE -->
+    <div id="page-home" class="page"><!-- Hero Section -->
+     <section class="hero-gradient min-h-[90%] flex items-center relative overflow-hidden">
+      <div class="absolute inset-0">
+       <div class="absolute top-20 left-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl"></div>
+       <div class="absolute bottom-20 right-10 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl"></div>
+       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+       <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="fade-in">
+         <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10 mb-6"><span class="w-2 h-2 bg-green-400 rounded-full pulse-badge"></span> <span class="text-sm text-gray-300">Trusted by 10,000+ K-Pop Fans</span>
+         </div>
+         <h1 id="hero-tagline" class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Your Trusted <span class="gradient-text">K-Pop Photocard</span> Store</h1>
+         <p id="hero-subtitle" class="text-lg text-gray-400 mb-8 max-w-lg">Authentic photocards from your favorite idols. BTS, BLACKPINK, SEVENTEEN, Stray Kids &amp; more. 100% Original &amp; Safely Packed.</p>
+         <div class="flex flex-wrap gap-4"><button id="cta-button" onclick="navigateTo('products')" class="btn-glow px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold text-lg hover:shadow-lg hover:shadow-purple-500/30 transition-all"> Shop Now ✨ </button> <button onclick="navigateTo('about')" class="px-8 py-4 bg-white/5 border border-white/20 rounded-xl font-semibold hover:bg-white/10 transition-all"> Learn More </button>
+         </div>
+         <div class="flex items-center gap-8 mt-12">
+          <div>
+           <div class="text-3xl font-bold gradient-text">
+            500+
+           </div>
+           <div class="text-sm text-gray-400">
+            Products
+           </div>
+          </div>
+          <div class="w-px h-12 bg-white/20"></div>
+          <div>
+           <div class="text-3xl font-bold gradient-text">
+            50+
+           </div>
+           <div class="text-sm text-gray-400">
+            Artists
+           </div>
+          </div>
+          <div class="w-px h-12 bg-white/20"></div>
+          <div>
+           <div class="text-3xl font-bold gradient-text">
+            4.9★
+           </div>
+           <div class="text-sm text-gray-400">
+            Rating
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="relative hidden lg:block">
+         <div class="floating">
+          <div class="grid grid-cols-2 gap-4">
+           <div class="space-y-4">
+            <div class="bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-2xl p-4 neon-border card-hover">
+             <div class="aspect-[3/4] bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl mb-3 flex items-center justify-center text-4xl">
+              💜
+             </div>
+             <div class="text-sm font-medium">
+              BTS Collection
+             </div>
+             <div class="text-xs text-gray-400">
+              50+ Cards
+             </div>
+            </div>
+            <div class="bg-gradient-to-br from-pink-900/50 to-rose-900/50 rounded-2xl p-4 neon-border card-hover">
+             <div class="aspect-[3/4] bg-gradient-to-br from-pink-600 to-rose-600 rounded-xl mb-3 flex items-center justify-center text-4xl">
+              🖤
+             </div>
+             <div class="text-sm font-medium">
+              BLACKPINK
+             </div>
+             <div class="text-xs text-gray-400">
+              40+ Cards
+             </div>
+            </div>
+           </div>
+           <div class="space-y-4 mt-8">
+            <div class="bg-gradient-to-br from-blue-900/50 to-cyan-900/50 rounded-2xl p-4 neon-border card-hover">
+             <div class="aspect-[3/4] bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl mb-3 flex items-center justify-center text-4xl">
+              💙
+             </div>
+             <div class="text-sm font-medium">
+              SEVENTEEN
+             </div>
+             <div class="text-xs text-gray-400">
+              60+ Cards
+             </div>
+            </div>
+            <div class="bg-gradient-to-br from-red-900/50 to-orange-900/50 rounded-2xl p-4 neon-border card-hover">
+             <div class="aspect-[3/4] bg-gradient-to-br from-red-600 to-orange-600 rounded-xl mb-3 flex items-center justify-center text-4xl">
+              ❤️
+             </div>
+             <div class="text-sm font-medium">
+              Stray Kids
+             </div>
+             <div class="text-xs text-gray-400">
+              45+ Cards
+             </div>
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </section><!-- Featured Groups -->
+     <section class="py-20 bg-[#0a0a0f]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+       <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">Featured <span class="gradient-text">Groups</span></h2>
+        <p class="text-gray-400">Browse photocards from your favorite K-Pop groups</p>
+       </div>
+       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"><button onclick="filterByGroup('BTS')" class="group p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-purple-500/50 transition-all card-hover">
+         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+          💜
+         </div>
+         <div class="font-semibold text-center">
+          BTS
+         </div></button> <button onclick="filterByGroup('BLACKPINK')" class="group p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-pink-500/50 transition-all card-hover">
+         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+          🖤
+         </div>
+         <div class="font-semibold text-center">
+          BLACKPINK
+         </div></button> <button onclick="filterByGroup('SEVENTEEN')" class="group p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-blue-500/50 transition-all card-hover">
+         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+          💎
+         </div>
+         <div class="font-semibold text-center">
+          SEVENTEEN
+         </div></button> <button onclick="filterByGroup('Stray Kids')" class="group p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-red-500/50 transition-all card-hover">
+         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+          🔥
+         </div>
+         <div class="font-semibold text-center">
+          Stray Kids
+         </div></button> <button onclick="filterByGroup('NewJeans')" class="group p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-green-500/50 transition-all card-hover">
+         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+          🐰
+         </div>
+         <div class="font-semibold text-center">
+          NewJeans
+         </div></button> <button onclick="filterByGroup('aespa')" class="group p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-violet-500/50 transition-all card-hover">
+         <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+          🦋
+         </div>
+         <div class="font-semibold text-center">
+          aespa
+         </div></button>
+       </div>
+      </div>
+     </section><!-- Best Sellers -->
+     <section class="py-20 bg-gradient-to-b from-[#0a0a0f] to-[#0f0f1a]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+       <div class="flex items-center justify-between mb-12">
+        <div>
+         <h2 class="text-3xl font-bold mb-2">Best <span class="gradient-text">Sellers</span></h2>
+         <p class="text-gray-400">Most loved photocards by our customers</p>
+        </div><button onclick="navigateTo('products')" class="hidden sm:flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors"> View All 
+         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+         </svg></button>
+       </div>
+       <div id="best-sellers-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"><!-- Populated by JS -->
+       </div>
+      </div>
+     </section><!-- Why Choose Us -->
+     <section class="py-20 bg-[#0f0f1a]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+       <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold mb-4">Why Choose <span class="gradient-text">K-CARD STUDIO</span>?</h2>
+        <p class="text-gray-400 max-w-2xl mx-auto">We're committed to providing the best photocard shopping experience for K-Pop fans</p>
+       </div>
+       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-6 bg-white/5 rounded-2xl border border-white/10 card-hover">
+         <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-2xl mb-4">
+          ✓
+         </div>
+         <h3 class="font-semibold text-lg mb-2">100% Authentic</h3>
+         <p class="text-gray-400 text-sm">All photocards are guaranteed original from official albums</p>
+        </div>
+        <div class="p-6 bg-white/5 rounded-2xl border border-white/10 card-hover">
+         <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-2xl mb-4">
+          📦
+         </div>
+         <h3 class="font-semibold text-lg mb-2">Safe Packaging</h3>
+         <p class="text-gray-400 text-sm">Double-protected with card sleeve &amp; rigid mailer</p>
+        </div>
+        <div class="p-6 bg-white/5 rounded-2xl border border-white/10 card-hover">
+         <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-2xl mb-4">
+          ⚡
+         </div>
+         <h3 class="font-semibold text-lg mb-2">Fast Shipping</h3>
+         <p class="text-gray-400 text-sm">Same-day processing, delivery in 2-5 business days</p>
+        </div>
+        <div class="p-6 bg-white/5 rounded-2xl border border-white/10 card-hover">
+         <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-2xl mb-4">
+          💬
+         </div>
+         <h3 class="font-semibold text-lg mb-2">24/7 Support</h3>
+         <p class="text-gray-400 text-sm">Friendly customer service via WhatsApp &amp; Instagram</p>
+        </div>
+       </div>
+      </div>
+     </section>
+    </div><!-- PRODUCTS PAGE -->
+    <div id="page-products" class="page hidden">
+     <section class="py-12 bg-[#0a0a0f] min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+       <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-2">Shop <span class="gradient-text">Photocards</span></h1>
+        <p class="text-gray-400">Find your favorite idol's photocard</p>
+       </div><!-- Filters -->
+       <div class="flex flex-wrap gap-4 mb-8 p-4 bg-white/5 rounded-2xl border border-white/10">
+        <div class="flex-1 min-w-[200px]"><label for="filter-group" class="block text-sm text-gray-400 mb-2">Group</label> <select id="filter-group" onchange="applyFilters()" class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-purple-500"> <option value="">All Groups</option> <option value="BTS">BTS</option> <option value="BLACKPINK">BLACKPINK</option> <option value="SEVENTEEN">SEVENTEEN</option> <option value="Stray Kids">Stray Kids</option> <option value="NewJeans">NewJeans</option> <option value="aespa">aespa</option> <option value="EXO">EXO</option> <option value="TWICE">TWICE</option> </select>
+        </div>
+        <div class="flex-1 min-w-[200px]"><label for="filter-price" class="block text-sm text-gray-400 mb-2">Price Range</label> <select id="filter-price" onchange="applyFilters()" class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-purple-500"> <option value="">All Prices</option> <option value="0-50000">Under Rp 50,000</option> <option value="50000-100000">Rp 50,000 - 100,000</option> <option value="100000-200000">Rp 100,000 - 200,000</option> <option value="200000+">Above Rp 200,000</option> </select>
+        </div>
+        <div class="flex-1 min-w-[200px]"><label for="filter-condition" class="block text-sm text-gray-400 mb-2">Condition</label> <select id="filter-condition" onchange="applyFilters()" class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-purple-500"> <option value="">All Conditions</option> <option value="Mint">Mint</option> <option value="Near Mint">Near Mint</option> </select>
+        </div>
+        <div class="flex-1 min-w-[200px]"><label for="filter-sort" class="block text-sm text-gray-400 mb-2">Sort By</label> <select id="filter-sort" onchange="applyFilters()" class="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-purple-500"> <option value="popular">Most Popular</option> <option value="newest">Newest</option> <option value="price-low">Price: Low to High</option> <option value="price-high">Price: High to Low</option> </select>
+        </div>
+       </div><!-- Products Grid -->
+       <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"><!-- Populated by JS -->
+       </div>
+      </div>
+     </section>
+    </div><!-- PRODUCT DETAIL PAGE -->
+    <div id="page-product-detail" class="page hidden">
+     <section class="py-12 bg-[#0a0a0f] min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><button onclick="navigateTo('products')" class="flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg> Back to Shop </button>
+       <div id="product-detail-content" class="grid lg:grid-cols-2 gap-12"><!-- Populated by JS -->
+       </div><!-- Reviews Section -->
+       <div class="mt-16">
+        <h2 class="text-2xl font-bold mb-8">Customer <span class="gradient-text">Reviews</span></h2>
+        <div id="reviews-section" class="space-y-6"><!-- Populated by JS -->
+        </div>
+       </div>
+      </div>
+     </section>
+    </div><!-- CART PAGE -->
+    <div id="page-cart" class="page hidden">
+     <section class="py-12 bg-[#0a0a0f] min-h-screen">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+       <h1 class="text-3xl font-bold mb-8">Shopping <span class="gradient-text">Cart</span></h1>
+       <div id="cart-content"><!-- Populated by JS -->
+       </div>
+      </div>
+     </section>
+    </div><!-- CHECKOUT PAGE -->
+    <div id="page-checkout" class="page hidden">
+     <section class="py-12 bg-[#0a0a0f] min-h-screen">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"><button onclick="navigateTo('cart')" class="flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg> Back to Cart </button>
+       <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+       <div class="grid lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-6"><!-- Shipping Info -->
+         <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+          <h2 class="text-xl font-semibold mb-4">📍 Shipping Information</h2>
+          <form id="checkout-form" class="space-y-4" onsubmit="handleCheckoutSubmit(event)">
+           <div><label for="checkout-name" class="block text-sm text-gray-400 mb-2">Full Name</label> <input type="text" id="checkout-name" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" placeholder="Enter your full name">
+           </div>
+           <div><label for="checkout-phone" class="block text-sm text-gray-400 mb-2">Phone Number</label> <input type="tel" id="checkout-phone" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" placeholder="08xxxxxxxxxx">
+           </div>
+           <div><label for="checkout-address" class="block text-sm text-gray-400 mb-2">Shipping Address</label> <textarea id="checkout-address" required rows="3" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 resize-none" placeholder="Enter your complete address"></textarea>
+           </div>
+          </form>
+         </div><!-- Payment Method -->
+         <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+          <h2 class="text-xl font-semibold mb-4">💳 Payment Method</h2>
+          <div class="space-y-3"><label class="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:border-purple-500/50 transition-colors"> <input type="radio" name="payment" value="transfer" checked class="w-5 h-5 accent-purple-500">
+            <div class="flex-1">
+             <div class="font-medium">
+              Bank Transfer
+             </div>
+             <div class="text-sm text-gray-400">
+              BCA, Mandiri, BNI, BRI
+             </div>
+            </div><span class="text-2xl">🏦</span> </label> <label class="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:border-purple-500/50 transition-colors"> <input type="radio" name="payment" value="ewallet" class="w-5 h-5 accent-purple-500">
+            <div class="flex-1">
+             <div class="font-medium">
+              E-Wallet
+             </div>
+             <div class="text-sm text-gray-400">
+              GoPay, OVO, DANA, ShopeePay
+             </div>
+            </div><span class="text-2xl">📱</span> </label> <label class="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:border-purple-500/50 transition-colors"> <input type="radio" name="payment" value="qris" class="w-5 h-5 accent-purple-500">
+            <div class="flex-1">
+             <div class="font-medium">
+              QRIS
+             </div>
+             <div class="text-sm text-gray-400">
+              Scan &amp; Pay with any app
+             </div>
+            </div><span class="text-2xl">📷</span> </label>
+          </div>
+         </div>
+        </div><!-- Order Summary -->
+        <div class="lg:col-span-1">
+         <div class="p-6 bg-white/5 rounded-2xl border border-white/10 sticky top-24">
+          <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+          <div id="checkout-summary" class="space-y-4"><!-- Populated by JS -->
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </section>
+    </div><!-- WISHLIST PAGE -->
+    <div id="page-wishlist" class="page hidden">
+     <section class="py-12 bg-[#0a0a0f] min-h-screen">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+       <h1 class="text-3xl font-bold mb-8">My <span class="gradient-text">Wishlist</span> 💜</h1>
+       <div id="wishlist-content"><!-- Populated by JS -->
+       </div>
+      </div>
+     </section>
+    </div><!-- ABOUT PAGE -->
+    <div id="page-about" class="page hidden">
+     <section class="py-12 bg-[#0a0a0f] min-h-screen">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+       <div class="text-center mb-12">
+        <div class="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-5xl">
+         💜
+        </div>
+        <h1 class="text-4xl font-bold mb-4">About <span class="gradient-text">K-CARD STUDIO</span></h1>
+        <p class="text-gray-400 text-lg">Your trusted destination for authentic K-Pop photocards</p>
+       </div>
+       <div class="prose prose-invert max-w-none">
+        <div class="p-8 bg-white/5 rounded-2xl border border-white/10 mb-8">
+         <h2 class="text-2xl font-bold mb-4 gradient-text">Our Story 📖</h2>
+         <p class="text-gray-300 leading-relaxed mb-4">K-CARD STUDIO was founded in 2020 by a passionate group of K-Pop fans who understood the struggle of finding authentic photocards. What started as a small collection in a bedroom has grown into Indonesia's most trusted photocard store.</p>
+         <p class="text-gray-300 leading-relaxed mb-4">We believe every fan deserves to own a piece of their favorite idol. That's why we work directly with official distributors and verified sellers to ensure every photocard we sell is 100% authentic.</p>
+         <p class="text-gray-300 leading-relaxed">From rare POBs to official album pulls, we've helped over 10,000 fans complete their collections. Our team personally inspects every card to ensure it meets our high quality standards before shipping.</p>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-6 mb-8">
+         <div class="p-6 bg-white/5 rounded-2xl border border-white/10 text-center">
+          <div class="text-4xl font-bold gradient-text mb-2">
+           10K+
+          </div>
+          <div class="text-gray-400">
+           Happy Customers
+          </div>
+         </div>
+         <div class="p-6 bg-white/5 rounded-2xl border border-white/10 text-center">
+          <div class="text-4xl font-bold gradient-text mb-2">
+           500+
+          </div>
+          <div class="text-gray-400">
+           Products Available
+          </div>
+         </div>
+         <div class="p-6 bg-white/5 rounded-2xl border border-white/10 text-center">
+          <div class="text-4xl font-bold gradient-text mb-2">
+           4.9★
+          </div>
+          <div class="text-gray-400">
+           Customer Rating
+          </div>
+         </div>
+        </div>
+        <div class="p-8 bg-white/5 rounded-2xl border border-white/10">
+         <h2 class="text-2xl font-bold mb-4 gradient-text">Our Promise 🤝</h2>
+         <ul class="space-y-4">
+          <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center flex-shrink-0 mt-1">✓</span>
+           <div>
+            <div class="font-medium">
+             100% Authentic Products
+            </div>
+            <div class="text-gray-400 text-sm">
+             Every photocard is guaranteed original from official albums
+            </div>
+           </div></li>
+          <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center flex-shrink-0 mt-1">✓</span>
+           <div>
+            <div class="font-medium">
+             Safe &amp; Secure Packaging
+            </div>
+            <div class="text-gray-400 text-sm">
+             Double protection with card sleeve and rigid mailer
+            </div>
+           </div></li>
+          <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center flex-shrink-0 mt-1">✓</span>
+           <div>
+            <div class="font-medium">
+             Fast Processing
+            </div>
+            <div class="text-gray-400 text-sm">
+             Orders processed within 24 hours on business days
+            </div>
+           </div></li>
+          <li class="flex items-start gap-3"><span class="w-6 h-6 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center flex-shrink-0 mt-1">✓</span>
+           <div>
+            <div class="font-medium">
+             Responsive Support
+            </div>
+            <div class="text-gray-400 text-sm">
+             Our team is always ready to help via WhatsApp &amp; Instagram
+            </div>
+           </div></li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </section>
+    </div><!-- CONTACT PAGE -->
+    <div id="page-contact" class="page hidden">
+     <section class="py-12 bg-[#0a0a0f] min-h-screen">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+       <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold mb-4">Contact <span class="gradient-text">Us</span></h1>
+        <p class="text-gray-400 text-lg">We'd love to hear from you! Get in touch with our team.</p>
+       </div>
+       <div class="grid md:grid-cols-2 gap-8"><!-- Contact Form -->
+        <div class="p-8 bg-white/5 rounded-2xl border border-white/10">
+         <h2 class="text-xl font-semibold mb-6">Send us a Message 💌</h2>
+         <form id="contact-form" class="space-y-4" onsubmit="handleContactSubmit(event)">
+          <div><label for="contact-name" class="block text-sm text-gray-400 mb-2">Your Name</label> <input type="text" id="contact-name" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" placeholder="Enter your name">
+          </div>
+          <div><label for="contact-email" class="block text-sm text-gray-400 mb-2">Email Address</label> <input type="email" id="contact-email" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500" placeholder="your@email.com">
+          </div>
+          <div><label for="contact-subject" class="block text-sm text-gray-400 mb-2">Subject</label> <select id="contact-subject" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-purple-500"> <option value="">Select a subject</option> <option value="order">Order Inquiry</option> <option value="product">Product Question</option> <option value="shipping">Shipping &amp; Delivery</option> <option value="return">Returns &amp; Refunds</option> <option value="other">Other</option> </select>
+          </div>
+          <div><label for="contact-message" class="block text-sm text-gray-400 mb-2">Message</label> <textarea id="contact-message" required rows="4" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 resize-none" placeholder="Write your message here..."></textarea>
+          </div><button type="submit" class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all"> Send Message ✨ </button>
+         </form>
+        </div><!-- Contact Info -->
+        <div class="space-y-6"><a href="https://wa.me/6281216821660" target="_blank" rel="noopener noreferrer" class="block p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-green-500/50 transition-all card-hover">
+          <div class="flex items-center gap-4">
+           <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-2xl">
+            💬
+           </div>
+           <div>
+            <div class="font-semibold text-lg">
+             WhatsApp
+            </div>
+            <div class="text-gray-400">
+             +62 812-3456-7890
+            </div>
+            <div class="text-green-400 text-sm">
+             Fast Response • 24/7
+            </div>
+           </div>
+          </div></a> <a href="https://instagram.com/kcardstudio" target="_blank" rel="noopener noreferrer" class="block p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-pink-500/50 transition-all card-hover">
+          <div class="flex items-center gap-4">
+           <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center text-2xl">
+            📸
+           </div>
+           <div>
+            <div class="font-semibold text-lg">
+             Instagram
+            </div>
+            <div class="text-gray-400">
+             @kcardstudio
+            </div>
+            <div class="text-pink-400 text-sm">
+             Updates &amp; New Arrivals
+            </div>
+           </div>
+          </div></a>
+         <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+          <div class="flex items-center gap-4">
+           <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-2xl">
+            📧
+           </div>
+           <div>
+            <div class="font-semibold text-lg">
+             Email
+            </div>
+            <div class="text-gray-400">
+             hello@kcardstudio.com
+            </div>
+            <div class="text-blue-400 text-sm">
+             Response within 24 hours
+            </div>
+           </div>
+          </div>
+         </div>
+         <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+          <div class="flex items-center gap-4">
+           <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-2xl">
+            🕐
+           </div>
+           <div>
+            <div class="font-semibold text-lg">
+             Business Hours
+            </div>
+            <div class="text-gray-400">
+             Mon - Sat: 09:00 - 21:00 WIB
+            </div>
+            <div class="text-orange-400 text-sm">
+             Sunday: 10:00 - 18:00 WIB
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </section>
+    </div><!-- ORDER SUCCESS PAGE -->
+    <div id="page-order-success" class="page hidden">
+     <section class="py-12 bg-[#0a0a0f] min-h-screen flex items-center">
+      <div class="max-w-lg mx-auto px-4 text-center">
+       <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center text-5xl animate-bounce">
+        ✓
+       </div>
+       <h1 class="text-3xl font-bold mb-4">Order <span class="gradient-text">Successful!</span></h1>
+       <p class="text-gray-400 mb-8">Thank you for shopping at K-CARD STUDIO! 💜<br>
+         Your order has been received and is being processed.</p>
+       <div class="p-6 bg-white/5 rounded-2xl border border-white/10 mb-8 text-left">
+        <div class="text-sm text-gray-400 mb-2">
+         Order ID
+        </div>
+        <div id="order-id" class="font-mono text-lg font-semibold gradient-text">
+         KCS-XXXXXX
+        </div>
+       </div>
+       <div class="space-y-4"><button onclick="navigateTo('products')" class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all"> Continue Shopping ✨ </button> <button onclick="navigateTo('home')" class="w-full py-3 bg-white/10 border border-white/20 rounded-xl font-semibold hover:bg-white/20 transition-all"> Back to Home </button>
+       </div>
+      </div>
+     </section>
+    </div>
+   </main><!-- Footer -->
+   <footer class="bg-[#050507] border-t border-white/10 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+      <div>
+       <div class="flex items-center gap-2 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center"><span class="text-xl">💜</span>
+        </div><span class="text-xl font-bold">K-CARD <span class="gradient-text">STUDIO</span></span>
+       </div>
+       <p class="text-gray-400 text-sm">Your trusted destination for authentic K-Pop photocards. 100% original, safely packed, fast delivery.</p>
+      </div>
+      <div>
+       <h3 class="font-semibold mb-4">Quick Links</h3>
+       <ul class="space-y-2 text-sm text-gray-400">
+        <li><button onclick="navigateTo('home')" class="hover:text-white transition-colors">Home</button></li>
+        <li><button onclick="navigateTo('products')" class="hover:text-white transition-colors">Shop</button></li>
+        <li><button onclick="navigateTo('about')" class="hover:text-white transition-colors">About Us</button></li>
+        <li><button onclick="navigateTo('contact')" class="hover:text-white transition-colors">Contact</button></li>
+       </ul>
+      </div>
+      <div>
+       <h3 class="font-semibold mb-4">Popular Groups</h3>
+       <ul class="space-y-2 text-sm text-gray-400">
+        <li><button onclick="filterByGroup('BTS')" class="hover:text-white transition-colors">BTS</button></li>
+        <li><button onclick="filterByGroup('BLACKPINK')" class="hover:text-white transition-colors">BLACKPINK</button></li>
+        <li><button onclick="filterByGroup('SEVENTEEN')" class="hover:text-white transition-colors">SEVENTEEN</button></li>
+        <li><button onclick="filterByGroup('Stray Kids')" class="hover:text-white transition-colors">Stray Kids</button></li>
+       </ul>
+      </div>
+      <div>
+       <h3 class="font-semibold mb-4">Connect With Us</h3>
+       <div class="flex gap-3"><a href="https://instagram.com/kcardstudio" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">📸</a> <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">💬</a> <a href="mailto:hello@kcardstudio.com" class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">📧</a>
+       </div>
+      </div>
+     </div>
+     <div class="pt-8 border-t border-white/10 text-center text-sm text-gray-500">
+      <p>© 2024 K-CARD STUDIO. All rights reserved. Made with 💜 for K-Pop fans.</p>
+     </div>
+    </div>
+   </footer>
+  </div>
+  <script>
+    // Default config
+    const defaultConfig = {
+      hero_tagline: 'Your Trusted K-Pop Photocard Store',
+      hero_subtitle: 'Authentic photocards from your favorite idols. BTS, BLACKPINK, SEVENTEEN, Stray Kids & more. 100% Original & Safely Packed.',
+      cta_button_text: 'Shop Now ✨',
+      background_color: '#0a0a0f',
+      surface_color: '#ffffff0d',
+      text_color: '#ffffff',
+      primary_action_color: '#a855f7',
+      secondary_action_color: '#ec4899'
+    };
+
+    let config = { ...defaultConfig };
+    let cartItems = [];
+    let wishlistItems = [];
+    let currentPage = 'home';
+    let selectedProduct = null;
+
+    // Product data
+    const products = [
+      { id: '1', name: 'V - Layover POB', idol: 'V', group: 'BTS', album: 'Layover', price: 150000, stock: 5, condition: 'Mint', badge: 'Best Seller', color: 'from-purple-500 to-pink-500', emoji: '💜', rating: 4.9, reviews: 128, sold: 342 },
+      { id: '2', name: 'Jungkook - Golden POB', idol: 'Jungkook', group: 'BTS', album: 'Golden', price: 180000, stock: 3, condition: 'Mint', badge: 'Rare', color: 'from-amber-500 to-orange-500', emoji: '🐰', rating: 5.0, reviews: 89, sold: 156 },
+      { id: '3', name: 'Lisa - LALISA', idol: 'Lisa', group: 'BLACKPINK', album: 'LALISA', price: 200000, stock: 2, condition: 'Mint', badge: 'Limited', color: 'from-pink-500 to-rose-500', emoji: '🖤', rating: 4.8, reviews: 156, sold: 289 },
+      { id: '4', name: 'Jennie - Solo', idol: 'Jennie', group: 'BLACKPINK', album: 'Solo', price: 250000, stock: 1, condition: 'Near Mint', badge: 'Rare', color: 'from-rose-500 to-red-500', emoji: '💎', rating: 4.9, reviews: 201, sold: 178 },
+      { id: '5', name: 'Mingyu - FML', idol: 'Mingyu', group: 'SEVENTEEN', album: 'FML', price: 120000, stock: 8, condition: 'Mint', badge: 'Best Seller', color: 'from-blue-500 to-cyan-500', emoji: '💙', rating: 4.7, reviews: 94, sold: 267 },
+      { id: '6', name: 'Wonwoo - SEVENTEENTH HEAVEN', idol: 'Wonwoo', group: 'SEVENTEEN', album: 'SEVENTEENTH HEAVEN', price: 130000, stock: 6, condition: 'Mint', badge: '', color: 'from-indigo-500 to-blue-500', emoji: '📚', rating: 4.8, reviews: 67, sold: 145 },
+      { id: '7', name: 'Hyunjin - ROCK-STAR', idol: 'Hyunjin', group: 'Stray Kids', album: 'ROCK-STAR', price: 160000, stock: 4, condition: 'Mint', badge: 'Best Seller', color: 'from-red-500 to-orange-500', emoji: '🔥', rating: 4.9, reviews: 178, sold: 312 },
+      { id: '8', name: 'Felix - 5-STAR', idol: 'Felix', group: 'Stray Kids', album: '5-STAR', price: 140000, stock: 7, condition: 'Mint', badge: '', color: 'from-yellow-500 to-amber-500', emoji: '⭐', rating: 4.8, reviews: 112, sold: 198 },
+      { id: '9', name: 'Minji - Get Up', idol: 'Minji', group: 'NewJeans', album: 'Get Up', price: 170000, stock: 3, condition: 'Mint', badge: 'Limited', color: 'from-green-500 to-teal-500', emoji: '🐰', rating: 4.9, reviews: 143, sold: 234 },
+      { id: '10', name: 'Hanni - How Sweet', idol: 'Hanni', group: 'NewJeans', album: 'How Sweet', price: 165000, stock: 4, condition: 'Mint', badge: 'Best Seller', color: 'from-teal-500 to-cyan-500', emoji: '🍬', rating: 5.0, reviews: 98, sold: 187 },
+      { id: '11', name: 'Karina - Drama', idol: 'Karina', group: 'aespa', album: 'Drama', price: 155000, stock: 5, condition: 'Mint', badge: '', color: 'from-violet-500 to-purple-500', emoji: '🦋', rating: 4.8, reviews: 87, sold: 156 },
+      { id: '12', name: 'Winter - Savage', idol: 'Winter', group: 'aespa', album: 'Savage', price: 145000, stock: 6, condition: 'Mint', badge: '', color: 'from-purple-500 to-fuchsia-500', emoji: '❄️', rating: 4.7, reviews: 76, sold: 134 },
+      { id: '13', name: 'Baekhyun - Delight', idol: 'Baekhyun', group: 'EXO', album: 'Delight', price: 190000, stock: 2, condition: 'Near Mint', badge: 'Rare', color: 'from-red-500 to-rose-500', emoji: '🍬', rating: 4.9, reviews: 234, sold: 412 },
+      { id: '14', name: 'Kai - Peaches', idol: 'Kai', group: 'EXO', album: 'Peaches', price: 175000, stock: 3, condition: 'Mint', badge: '', color: 'from-orange-500 to-pink-500', emoji: '🍑', rating: 4.8, reviews: 167, sold: 289 },
+      { id: '15', name: 'Sana - Ready To Be', idol: 'Sana', group: 'TWICE', album: 'Ready To Be', price: 135000, stock: 5, condition: 'Mint', badge: 'Best Seller', color: 'from-pink-400 to-rose-400', emoji: '🍭', rating: 4.9, reviews: 145, sold: 267 },
+      { id: '16', name: 'Momo - With YOU-th', idol: 'Momo', group: 'TWICE', album: 'With YOU-th', price: 125000, stock: 7, condition: 'Mint', badge: '', color: 'from-coral-400 to-pink-400', emoji: '🩰', rating: 4.7, reviews: 89, sold: 178 }
+    ];
+
+    const sampleReviews = [
+      { name: 'Sarah K.', rating: 5, comment: 'Perfect condition! Arrived safely with great packaging. Will definitely order again! 💜', date: '2 days ago' },
+      { name: 'Dina R.', rating: 5, comment: 'Super fast shipping and the card is absolutely beautiful. Thank you K-CARD STUDIO!', date: '1 week ago' },
+      { name: 'Mira A.', rating: 4, comment: 'Great quality photocard. Packaging was secure. Recommended seller! ⭐', date: '2 weeks ago' }
+    ];
+
+    // Data SDK Handler
+    const dataHandler = {
+      onDataChanged(data) {
+        cartItems = data.filter(item => item.type === 'cart');
+        wishlistItems = data.filter(item => item.type === 'wishlist');
+        updateCartUI();
+        updateWishlistUI();
+        if (currentPage === 'cart') renderCart();
+        if (currentPage === 'wishlist') renderWishlist();
+        if (currentPage === 'checkout') renderCheckoutSummary();
+      }
+    };
+
+    // Initialize SDKs
+    async function initApp() {
+      // Initialize Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (newConfig) => {
+            config = { ...defaultConfig, ...newConfig };
+            applyConfig();
+          },
+          mapToCapabilities: (cfg) => ({
+            recolorables: [
+              { get: () => cfg.background_color || defaultConfig.background_color, set: (v) => window.elementSdk.setConfig({ background_color: v }) },
+              { get: () => cfg.surface_color || defaultConfig.surface_color, set: (v) => window.elementSdk.setConfig({ surface_color: v }) },
+              { get: () => cfg.text_color || defaultConfig.text_color, set: (v) => window.elementSdk.setConfig({ text_color: v }) },
+              { get: () => cfg.primary_action_color || defaultConfig.primary_action_color, set: (v) => window.elementSdk.setConfig({ primary_action_color: v }) },
+              { get: () => cfg.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => window.elementSdk.setConfig({ secondary_action_color: v }) }
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (cfg) => new Map([
+            ['hero_tagline', cfg.hero_tagline || defaultConfig.hero_tagline],
+            ['hero_subtitle', cfg.hero_subtitle || defaultConfig.hero_subtitle],
+            ['cta_button_text', cfg.cta_button_text || defaultConfig.cta_button_text]
+          ])
+        });
+        config = { ...defaultConfig, ...window.elementSdk.config };
+      }
+
+      // Initialize Data SDK
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }
+
+      applyConfig();
+      renderBestSellers();
+      renderProducts();
+    }
+
+    function applyConfig() {
+      const heroTagline = document.getElementById('hero-tagline');
+      const heroSubtitle = document.getElementById('hero-subtitle');
+      const ctaButton = document.getElementById('cta-button');
+
+      if (heroTagline) {
+        heroTagline.innerHTML = (config.hero_tagline || defaultConfig.hero_tagline).replace('K-Pop Photocard', '<span class="gradient-text">K-Pop Photocard</span>');
+      }
+      if (heroSubtitle) {
+        heroSubtitle.textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+      }
+      if (ctaButton) {
+        ctaButton.textContent = config.cta_button_text || defaultConfig.cta_button_text;
+      }
+    }
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast px-6 py-3 rounded-xl shadow-lg ${type === 'success' ? 'bg-gradient-to-r from-green-500 to-emerald-500' : type === 'error' ? 'bg-gradient-to-r from-red-500 to-rose-500' : 'bg-gradient-to-r from-purple-500 to-pink-500'}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Navigation
+    function navigateTo(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`page-${page}`).classList.remove('hidden');
+      currentPage = page;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      if (page === 'cart') renderCart();
+      if (page === 'wishlist') renderWishlist();
+      if (page === 'checkout') renderCheckoutSummary();
+      if (page === 'products') renderProducts();
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    }
+
+    // Format currency
+    function formatPrice(price) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price);
+    }
+
+    // Update cart/wishlist counts
+    function updateCartUI() {
+      const count = cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      const cartCount = document.getElementById('cart-count');
+      if (count > 0) {
+        cartCount.textContent = count;
+        cartCount.classList.remove('hidden');
+      } else {
+        cartCount.classList.add('hidden');
+      }
+    }
+
+    function updateWishlistUI() {
+      const count = wishlistItems.length;
+      const wishlistCount = document.getElementById('wishlist-count');
+      if (count > 0) {
+        wishlistCount.textContent = count;
+        wishlistCount.classList.remove('hidden');
+      } else {
+        wishlistCount.classList.add('hidden');
+      }
+    }
+
+    // Product card HTML
+    function createProductCard(product, showBadge = true) {
+      const isInWishlist = wishlistItems.some(item => item.productId === product.id);
+      return `
+        <div class="bg-white/5 rounded-2xl border border-white/10 overflow-hidden card-hover fade-in">
+          <div class="relative">
+            <div class="aspect-[3/4] bg-gradient-to-br ${product.color} flex items-center justify-center text-6xl cursor-pointer" onclick="viewProduct('${product.id}')">
+              ${product.emoji}
+            </div>
+            ${showBadge && product.badge ? `<span class="absolute top-3 left-3 px-3 py-1 text-xs font-semibold rounded-full ${product.badge === 'Rare' ? 'bg-amber-500' : product.badge === 'Limited' ? 'bg-red-500' : 'bg-green-500'}">${product.badge}</span>` : ''}
+            <button onclick="toggleWishlist('${product.id}')" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center hover:bg-black/70 transition-colors">
+              ${isInWishlist ? '❤️' : '🤍'}
+            </button>
+          </div>
+          <div class="p-4">
+            <div class="text-xs text-purple-400 mb-1">${product.group} • ${product.idol}</div>
+            <h3 class="font-semibold mb-1 truncate cursor-pointer hover:text-purple-400 transition-colors" onclick="viewProduct('${product.id}')">${product.name}</h3>
+            <div class="text-xs text-gray-400 mb-2">${product.album} • ${product.condition}</div>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-yellow-400 text-sm">★ ${product.rating}</span>
+              <span class="text-gray-500 text-xs">(${product.reviews})</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="font-bold gradient-text">${formatPrice(product.price)}</span>
+              <button onclick="addToCart('${product.id}')" class="px-3 py-1.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render best sellers
+    function renderBestSellers() {
+      const grid = document.getElementById('best-sellers-grid');
+      const bestSellers = products.filter(p => p.badge === 'Best Seller').slice(0, 4);
+      grid.innerHTML = bestSellers.map(p => createProductCard(p)).join('');
+    }
+
+    // Render products with filters
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      let filtered = [...products];
+      
+      const groupFilter = document.getElementById('filter-group')?.value;
+      const priceFilter = document.getElementById('filter-price')?.value;
+      const conditionFilter = document.getElementById('filter-condition')?.value;
+      const sortFilter = document.getElementById('filter-sort')?.value;
+      
+      if (groupFilter) filtered = filtered.filter(p => p.group === groupFilter);
+      if (conditionFilter) filtered = filtered.filter(p => p.condition === conditionFilter);
+      
+      if (priceFilter) {
+        if (priceFilter === '0-50000') filtered = filtered.filter(p => p.price < 50000);
+        else if (priceFilter === '50000-100000') filtered = filtered.filter(p => p.price >= 50000 && p.price < 100000);
+        else if (priceFilter === '100000-200000') filtered = filtered.filter(p => p.price >= 100000 && p.price < 200000);
+        else if (priceFilter === '200000+') filtered = filtered.filter(p => p.price >= 200000);
+      }
+      
+      if (sortFilter === 'newest') filtered.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+      else if (sortFilter === 'price-low') filtered.sort((a, b) => a.price - b.price);
+      else if (sortFilter === 'price-high') filtered.sort((a, b) => b.price - a.price);
+      else filtered.sort((a, b) => b.sold - a.sold);
+      
+      grid.innerHTML = filtered.length > 0 
+        ? filtered.map(p => createProductCard(p)).join('')
+        : '<div class="col-span-full text-center py-12 text-gray-400">No products found matching your filters.</div>';
+    }
+
+    function applyFilters() {
+      renderProducts();
+    }
+
+    function filterByGroup(group) {
+      navigateTo('products');
+      setTimeout(() => {
+        document.getElementById('filter-group').value = group;
+        applyFilters();
+      }, 100);
+    }
+
+    // View product detail
+    function viewProduct(productId) {
+      selectedProduct = products.find(p => p.id === productId);
+      if (!selectedProduct) return;
+      
+      const isInWishlist = wishlistItems.some(item => item.productId === selectedProduct.id);
+      
+      const content = document.getElementById('product-detail-content');
+      content.innerHTML = `
+        <div class="space-y-4">
+          <div class="aspect-[3/4] bg-gradient-to-br ${selectedProduct.color} rounded-2xl flex items-center justify-center text-[150px] neon-border">
+            ${selectedProduct.emoji}
+          </div>
+          <div class="grid grid-cols-4 gap-2">
+            ${[1,2,3,4].map(i => `<div class="aspect-square bg-gradient-to-br ${selectedProduct.color} rounded-xl flex items-center justify-center text-3xl opacity-${100 - i*15}">${selectedProduct.emoji}</div>`).join('')}
+          </div>
+        </div>
+        <div class="space-y-6">
+          <div>
+            ${selectedProduct.badge ? `<span class="inline-block px-3 py-1 text-sm font-semibold rounded-full mb-3 ${selectedProduct.badge === 'Rare' ? 'bg-amber-500' : selectedProduct.badge === 'Limited' ? 'bg-red-500' : 'bg-green-500'}">${selectedProduct.badge}</span>` : ''}
+            <h1 class="text-3xl font-bold mb-2">${selectedProduct.name}</h1>
+            <div class="flex items-center gap-4 text-gray-400">
+              <span class="text-purple-400">${selectedProduct.group}</span>
+              <span>•</span>
+              <span>${selectedProduct.idol}</span>
+              <span>•</span>
+              <span>${selectedProduct.album}</span>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-4">
+            <span class="text-yellow-400 text-xl">★ ${selectedProduct.rating}</span>
+            <span class="text-gray-400">(${selectedProduct.reviews} reviews)</span>
+            <span class="text-gray-500">•</span>
+            <span class="text-gray-400">${selectedProduct.sold} sold</span>
+          </div>
+          
+          <div class="text-4xl font-bold gradient-text">${formatPrice(selectedProduct.price)}</div>
+          
+          <div class="p-4 bg-white/5 rounded-xl border border-white/10 space-y-3">
+            <div class="flex justify-between">
+              <span class="text-gray-400">Condition</span>
+              <span class="font-medium ${selectedProduct.condition === 'Mint' ? 'text-green-400' : 'text-yellow-400'}">${selectedProduct.condition}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Stock</span>
+              <span class="font-medium">${selectedProduct.stock} available</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Album</span>
+              <span class="font-medium">${selectedProduct.album}</span>
+            </div>
+          </div>
+          
+          <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+            <h3 class="font-semibold mb-3">📦 Shipping & Packaging</h3>
+            <ul class="space-y-2 text-sm text-gray-400">
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Double card sleeve protection</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Rigid mailer to prevent bending</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Tracking number provided</li>
+              <li class="flex items-center gap-2"><span class="text-green-400">✓</span> Same-day processing</li>
+            </ul>
+          </div>
+          
+          <div class="flex gap-4">
+            <button onclick="addToCart('${selectedProduct.id}')" class="flex-1 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold text-lg hover:shadow-lg hover:shadow-purple-500/30 transition-all btn-glow">
+              Add to Cart 🛒
+            </button>
+            <button onclick="toggleWishlist('${selectedProduct.id}')" class="px-6 py-4 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-all">
+              ${isInWishlist ? '❤️' : '🤍'}
+            </button>
+          </div>
+        </div>
+      `;
+      
+      const reviewsSection = document.getElementById('reviews-section');
+      reviewsSection.innerHTML = sampleReviews.map(review => `
+        <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold">${review.name.charAt(0)}</div>
+              <div>
+                <div class="font-semibold">${review.name}</div>
+                <div class="text-xs text-gray-400">${review.date}</div>
+              </div>
+            </div>
+            <div class="text-yellow-400">${'★'.repeat(review.rating)}</div>
+          </div>
+          <p class="text-gray-300">${review.comment}</p>
+        </div>
+      `).join('');
+      
+      navigateTo('product-detail');
+    }
+
+    // Cart functions
+    async function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      
+      const existingItem = cartItems.find(item => item.productId === productId);
+      
+      if (cartItems.length >= 999 && !existingItem) {
+        showToast('Cart is full! Please remove some items first.', 'error');
+        return;
+      }
+      
+      if (existingItem) {
+        const result = await window.dataSdk.update({
+          ...existingItem,
+          quantity: (existingItem.quantity || 1) + 1
+        });
+        if (result.isOk) {
+          showToast(`Added another ${product.name} to cart! 🛒`);
+        }
+      } else {
+        const result = await window.dataSdk.create({
+          id: Date.now().toString(),
+          productId: product.id,
+          productName: product.name,
+          idol: product.idol,
+          group: product.group,
+          price: product.price,
+          quantity: 1,
+          type: 'cart',
+          createdAt: new Date().toISOString()
+        });
+        if (result.isOk) {
+          showToast(`${product.name} added to cart! 🛒`);
+        }
+      }
+    }
+
+    async function updateCartQuantity(itemId, delta) {
+      const item = cartItems.find(i => i.__backendId === itemId);
+      if (!item) return;
+      
+      const newQuantity = (item.quantity || 1) + delta;
+      if (newQuantity < 1) {
+        await removeFromCart(itemId);
+        return;
+      }
+      
+      await window.dataSdk.update({ ...item, quantity: newQuantity });
+    }
+
+    async function removeFromCart(itemId) {
+      const item = cartItems.find(i => i.__backendId === itemId);
+      if (!item) return;
+      
+      const result = await window.dataSdk.delete(item);
+      if (result.isOk) {
+        showToast('Item removed from cart');
+      }
+    }
+
+    function renderCart() {
+      const content = document.getElementById('cart-content');
+      
+      if (cartItems.length === 0) {
+        content.innerHTML = `
+          <div class="text-center py-16">
+            <div class="text-6xl mb-4">🛒</div>
+            <h2 class="text-2xl font-bold mb-2">Your cart is empty</h2>
+            <p class="text-gray-400 mb-6">Start shopping to add items to your cart!</p>
+            <button onclick="navigateTo('products')" class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+              Browse Products ✨
+            </button>
+          </div>
+        `;
+        return;
+      }
+      
+      const subtotal = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+      const shipping = subtotal > 300000 ? 0 : 15000;
+      const total = subtotal + shipping;
+      
+      content.innerHTML = `
+        <div class="space-y-4 mb-8">
+          ${cartItems.map(item => {
+            const product = products.find(p => p.id === item.productId) || {};
+            return `
+              <div class="flex gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 slide-in">
+                <div class="w-20 h-24 bg-gradient-to-br ${product.color || 'from-purple-500 to-pink-500'} rounded-xl flex items-center justify-center text-3xl flex-shrink-0">
+                  ${product.emoji || '💜'}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="font-semibold truncate">${item.productName}</h3>
+                  <div class="text-sm text-gray-400">${item.group} • ${item.idol}</div>
+                  <div class="font-bold gradient-text mt-2">${formatPrice(item.price)}</div>
+                </div>
+                <div class="flex flex-col items-end justify-between">
+                  <button onclick="removeFromCart('${item.__backendId}')" class="text-gray-400 hover:text-red-400 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                  <div class="flex items-center gap-2">
+                    <button onclick="updateCartQuantity('${item.__backendId}', -1)" class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">-</button>
+                    <span class="w-8 text-center">${item.quantity || 1}</span>
+                    <button onclick="updateCartQuantity('${item.__backendId}', 1)" class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">+</button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+        
+        <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+          <div class="space-y-3 mb-6">
+            <div class="flex justify-between text-gray-400">
+              <span>Subtotal</span>
+              <span>${formatPrice(subtotal)}</span>
+            </div>
+            <div class="flex justify-between text-gray-400">
+              <span>Shipping</span>
+              <span>${shipping === 0 ? '<span class="text-green-400">FREE</span>' : formatPrice(shipping)}</span>
+            </div>
+            ${subtotal < 300000 ? `<div class="text-xs text-purple-400">Free shipping on orders over ${formatPrice(300000)}!</div>` : ''}
+            <div class="flex justify-between text-xl font-bold pt-3 border-t border-white/10">
+              <span>Total</span>
+              <span class="gradient-text">${formatPrice(total)}</span>
+            </div>
+          </div>
+          <button onclick="navigateTo('checkout')" class="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold text-lg hover:shadow-lg hover:shadow-purple-500/30 transition-all btn-glow">
+            Proceed to Checkout ✨
+          </button>
+        </div>
+      `;
+    }
+
+    // Wishlist functions
+    async function toggleWishlist(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      
+      const existingItem = wishlistItems.find(item => item.productId === productId);
+      
+      if (existingItem) {
+        const result = await window.dataSdk.delete(existingItem);
+        if (result.isOk) {
+          showToast('Removed from wishlist');
+        }
+      } else {
+        if (wishlistItems.length >= 999) {
+          showToast('Wishlist is full!', 'error');
+          return;
+        }
+        
+        const result = await window.dataSdk.create({
+          id: Date.now().toString(),
+          productId: product.id,
+          productName: product.name,
+          idol: product.idol,
+          group: product.group,
+          price: product.price,
+          quantity: 1,
+          type: 'wishlist',
+          createdAt: new Date().toISOString()
+        });
+        if (result.isOk) {
+          showToast('Added to wishlist! 💜');
+        }
+      }
+      
+      // Re-render current page
+      if (currentPage === 'products') renderProducts();
+      if (currentPage === 'home') renderBestSellers();
+      if (currentPage === 'product-detail' && selectedProduct) viewProduct(selectedProduct.id);
+    }
+
+    function renderWishlist() {
+      const content = document.getElementById('wishlist-content');
+      
+      if (wishlistItems.length === 0) {
+        content.innerHTML = `
+          <div class="text-center py-16">
+            <div class="text-6xl mb-4">💜</div>
+            <h2 class="text-2xl font-bold mb-2">Your wishlist is empty</h2>
+            <p class="text-gray-400 mb-6">Save your favorite photocards for later!</p>
+            <button onclick="navigateTo('products')" class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all">
+              Browse Products ✨
+            </button>
+          </div>
+        `;
+        return;
+      }
+      
+      content.innerHTML = `
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+          ${wishlistItems.map(item => {
+            const product = products.find(p => p.id === item.productId);
+            if (!product) return '';
+            return createProductCard(product);
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // Checkout functions
+    function renderCheckoutSummary() {
+      const summary = document.getElementById('checkout-summary');
+      if (!summary) return;
+      
+      const subtotal = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+      const shipping = subtotal > 300000 ? 0 : 15000;
+      const total = subtotal + shipping;
+      
+      summary.innerHTML = `
+        <div class="space-y-3 pb-4 border-b border-white/10">
+          ${cartItems.map(item => `
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-400">${item.productName} x${item.quantity || 1}</span>
+              <span>${formatPrice(item.price * (item.quantity || 1))}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="space-y-2 py-4 border-b border-white/10">
+          <div class="flex justify-between text-gray-400">
+            <span>Subtotal</span>
+            <span>${formatPrice(subtotal)}</span>
+          </div>
+          <div class="flex justify-between text-gray-400">
+            <span>Shipping</span>
+            <span>${shipping === 0 ? '<span class="text-green-400">FREE</span>' : formatPrice(shipping)}</span>
+          </div>
+        </div>
+        <div class="flex justify-between text-xl font-bold pt-2">
+          <span>Total</span>
+          <span class="gradient-text">${formatPrice(total)}</span>
+        </div>
+        <button onclick="handleCheckoutSubmit(event)" class="w-full mt-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all btn-glow">
+          Place Order ✨
+        </button>
+      `;
+    }
+
+    async function handleCheckoutSubmit(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('checkout-name')?.value;
+      const phone = document.getElementById('checkout-phone')?.value;
+      const address = document.getElementById('checkout-address')?.value;
+      
+      if (!name || !phone || !address) {
+        showToast('Please fill in all shipping details', 'error');
+        return;
+      }
+      
+      // Clear cart
+      for (const item of cartItems) {
+        await window.dataSdk.delete(item);
+      }
+      
+      // Generate order ID
+      const orderId = 'KCS-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+      document.getElementById('order-id').textContent = orderId;
+      
+      navigateTo('order-success');
+    }
+
+    // Contact form
+    function handleContactSubmit(event) {
+      event.preventDefault();
+      showToast('Message sent successfully! We\'ll get back to you soon. 💜');
+      event.target.reset();
+    }
+
+    // Initialize on load
+    initApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c3fa4cfe255960c',t:'MTc2OTQyNjY2NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
